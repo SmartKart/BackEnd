@@ -371,7 +371,7 @@ router.put('/api/v1/cartItems/:item_id', (req, res, next) => {
   // Grab data from the URL parameters
   const id = req.params.item_id;
   // Grab data from http request
-  const data = {cart: req.body.cart, name: req.body.name, price: req.body.price, percentOff: req.body.percentOff, isOnSale: req.body.isOnSale, type:req.body.type, image: req.body.image};
+  const data = {cart: req.body.cart, name: req.body.name, price: req.body.price, quantity: req.body.quantity, percentOff: req.body.percentOff, isOnSale: req.body.isOnSale, type:req.body.type, image: req.body.image};
   // Get a Postgres client from the connection pool
   pg.connect(connectionString, (err, client, done) => {
     // Handle connection errors
@@ -381,22 +381,10 @@ router.put('/api/v1/cartItems/:item_id', (req, res, next) => {
       return res.status(500).json({success: false, data: err});
     }
     // SQL Query > Update Data
-    try {
-    	client.query('UPDATE cartItems SET cart=($2), name=($3), price=($4), percentOff=($5), isOnSale=($6), type=($7), image=($8) WHERE id=($1)',
-    [id, data.cart, data.name, data.price, data.percentOff, data.isOnSale, data.type, data.image]);
-    } catch (err){
-    	// SQL Query > Select Data
-	    const query = client.query("SELECT * FROM cartItems ORDER BY id ASC");
-	    // Stream results back one row at a time
-	    query.on('row', (row) => {
-	      results.push(row);
-	    });
-	    // After all data is returned, close connection and return results
-	    query.on('end', function() {
-	      done();
-	      return res.json(results);
-	    });
-    }
+
+    client.query('UPDATE cartItems SET cart=($2), name=($3), price=($4), quantity=($5), percentOff=($6), isOnSale=($7), type=($8), image=($9) WHERE id=($1)',
+    [id, data.cart, data.name, data.price, data.quantity, data.percentOff, data.isOnSale, data.type, data.image]);
+
     // SQL Query > Select Data
     const query = client.query("SELECT * FROM cartItems ORDER BY id ASC");
     // Stream results back one row at a time
@@ -410,6 +398,7 @@ router.put('/api/v1/cartItems/:item_id', (req, res, next) => {
     });
   });
 });
+
 
 router.delete('/api/v1/cartItems/:item_id', (req, res, next) => {
   const results = [];
