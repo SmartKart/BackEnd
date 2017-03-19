@@ -27,7 +27,8 @@ pg.connect(config, function (err, client, done) {
     function (next) {
       // Create the "cart" table.
       client.query("CREATE TABLE IF NOT EXISTS cart (id INT PRIMARY KEY, lat INT, long INT);");
-      client.query("CREATE TABLE IF NOT EXISTS store (id INT PRIMARY KEY, name TEXT, price DECIMAL(8,2), percentOff INT, isOnSale BOOLEAN, type TEXT);", next);
+      client.query("CREATE TABLE IF NOT EXISTS store (id INT PRIMARY KEY, name TEXT, price DECIMAL(8,2), percentOff INT, isOnSale BOOLEAN, type TEXT, image TEXT);");
+      client.query("CREATE TABLE IF NOT EXISTS cartItems (id INT PRIMARY KEY, cart INT, barcode INT, name TEXT, price DECIMAL(8,2), percentOff INT, isOnSale BOOLEAN, type TEXT, image TEXT);", next);
     },
     function (next) {
       // Insert two rows into the "cart" table.
