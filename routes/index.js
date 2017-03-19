@@ -301,7 +301,7 @@ router.delete('/api/v1/store/:item_id', (req, res, next) => {
 router.post('/api/v1/cartItems', (req, res, next) => {
   const results = [];
   // Grab data from http request
-  const data = {id: req.body.id, cart: req.body.cart, barcode: req.body.barcode, name: req.body.name, price: req.body.price, quantity: req.body.quantity, percentOff: req.body.percentOff, isOnSale: req.body.isOnSale, type:req.body.type, image:req.body.image };
+  const data = {id: req.body.id, cart: req.body.cart, name: req.body.name, price: req.body.price, quantity: req.body.quantity, percentOff: req.body.percentOff, isOnSale: req.body.isOnSale, type:req.body.type, image:req.body.image };
   // Get a Postgres client from the connection pool
   pg.connect(connectionString, (err, client, done) => {
     // Handle connection errors
@@ -311,8 +311,8 @@ router.post('/api/v1/cartItems', (req, res, next) => {
       return res.status(500).json({success: false, data: err});
     }
     // SQL Query > Insert Data
-    client.query('INSERT INTO cartItems (id, cart, barcode, name, price, quantity, percentOff, isOnSale, type, image) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)',
-    [data.id, data.cart, data.barcode, data.name, data.price, data.quantity, data.percentOff, data.isOnSale, data.type, data.image]);
+    client.query('INSERT INTO cartItems ( id, cart, name, price, quantity, percentOff, isOnSale, type, image) values($1, $2, $3, $4, $5, $6, $7, $8, $9)',
+    [data.id, data.cart, data.name, data.price, data.quantity, data.percentOff, data.isOnSale, data.type, data.image]);
     // SQL Query > Select Data
     const query = client.query('SELECT * FROM cartItems ORDER BY id ASC');
     // Stream results back one row at a time
